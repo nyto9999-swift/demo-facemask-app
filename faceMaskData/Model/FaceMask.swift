@@ -17,6 +17,7 @@ struct Feature: Codable {
 }
 
 struct Properties: Codable {
+    var county: String?
     var town: String?
     var mask_adult: Int?
     var mask_child: Int?

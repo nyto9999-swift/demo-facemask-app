@@ -14,8 +14,12 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        let context = appDelegate.persistentContainer.viewContext
+//        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+//        let context = appDelegate.persistentContainer.viewContext
+//        FaceMaskRequest()
+//        deleteAllData()
+        let localPath = NSPersistentContainer.defaultDirectoryURL()
+        print("CoreData path: \(localPath)")
         
         
         //        let entity = NSEntityDescription.entity(forEntityName: "Users", in: context)
@@ -44,8 +48,7 @@ class ViewController: UIViewController {
         
         
     }
-    
-    
+
     
 }
 

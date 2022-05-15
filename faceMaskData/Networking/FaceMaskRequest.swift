@@ -26,7 +26,6 @@ class FaceMaskRequest: Operation, URLSessionTaskDelegate, URLSessionDelegate, UR
     
     override init() {
         super.init()
-        
         let session = URLSession(configuration: .default, delegate: self, delegateQueue: OperationQueue.main)
         if let url = URL(string: URLString.FaceMask.rawValue) {
             var request = URLRequest(url: url)
@@ -34,9 +33,6 @@ class FaceMaskRequest: Operation, URLSessionTaskDelegate, URLSessionDelegate, UR
             let task = session.dataTask(with: request)
             task.resume()
         }
-
-        
-        
     }
     
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
@@ -48,17 +44,15 @@ class FaceMaskRequest: Operation, URLSessionTaskDelegate, URLSessionDelegate, UR
         completionHandler(.allow)
     }
     
+    //This method gets called zero or more times, untill request is done, here is where we get incoming data
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         
-        //This method gets called zero or more times, untill request is done, here is where we get incoming data
         if isCancelled {
             isFinished = true
             dataTask.cancel()
             return
         }
         incomingData.append(data)
-        
-        
     }
     
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
@@ -74,54 +68,73 @@ class FaceMaskRequest: Operation, URLSessionTaskDelegate, URLSessionDelegate, UR
         }
         
         print("Now, you can insert incoming data into coredata")
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        let context = appDelegate.persistentContainer.viewContext
         
+        var taichungData = [Feature]()
+        //MARK: JsonDecoder
         do {
             let decodedData = try JSONDecoder().decode(FaceMakeData.self,
                                                        from: incomingData as Data)
-            if let features = decodedData.features {
-                for feature in features {
+            guard let data = decodedData.features else { return }
+            let filteredData = data.filter { $0.properties.county == "臺中市" }
+            taichungData = filteredData
+        } catch { print(error) }
+        
+        //MARK: CoreData
+        var context: NSManagedObjectContext {
+            let appDelegate = UIApplication.shared.delegate as! AppDelegate
+            return appDelegate.persistentContainer.viewContext
+        }
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "FaceMasks")
+        let entity = NSEntityDescription.entity(forEntityName: "FaceMasks", in: context)
+        
+        
+        //first time
+        var count: Int? {
+            return try? context.count(for: request)
+        }
+        if count != 0 { return }
+        
+        //MARK: 把Json資料放到Local
+        for data in taichungData {
+            
+            let childMasks = data.properties.mask_child ?? 0
+            let adultMasks = data.properties.mask_adult ?? 0
+            let totalMasks = childMasks + adultMasks
+            let town       = data.properties.town
+            guard let town = town else { return }
+            
+            //確認地區是否已經存在於local
+            let request = NSFetchRequest<faceMaskDataFaceMasks>(entityName: "FaceMasks")
+            let predicate = NSPredicate(format: "town = %@", "\(town)")
+            request.predicate = predicate
+            request.fetchLimit = 1
+            
+            //存進local
+            do {
+                let localMaskData = try context.fetch(request)
+                let theLocalMaskData = localMaskData.first
+                
+                // 新資料
+                if theLocalMaskData == nil {
                     
-                    let taichung = feature.properties
-                    let adult = taichung.mask_adult ?? 0
-                    let child = taichung.mask_child ?? 0
-                    let totalMasks = adult + child
-                    let town = taichung.town
-                    let entity = NSEntityDescription.entity(forEntityName: "FaceMasks", in: context)
                     let newFaceMask = NSManagedObject(entity: entity!, insertInto: context)
-                    //MARK: if 該地區已經在local 把口罩數量加到該地區, else insert newFaceMask
+                    newFaceMask.setValue("\(town)", forKey: "town")
+                    newFaceMask.setValue(Int32(totalMasks), forKey: "quantity")
                     
-                    //        let entity = NSEntityDescription.entity(forEntityName: "Users", in: context)
-                    //        let newUser = NSManagedObject(entity: entity!, insertInto: context)
-                    //        newUser.setValue("Tony", forKey: "username")
-                    //        do {
-                    //            try context.save()
-                    //        }
-                    //        catch let err {
-                    //            print(err)
-                    //        }
-                    
-                    //        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Users")
-                    //        request.predicate = NSPredicate(format: "username = %@", "Tony")
-                    //        request.returnsObjectsAsFaults = false
-                    //        do {
-                    //            let result = try context.fetch(request)
-                    //            for data in result as! [NSManagedObject] {
-                    //                print(data.value(forKey: "username") as! String)
-                    //            }
-                    //        }
-                    //        catch let err {
-                    //            print(err)
-                    //        }
                 }
+                // 已有資料，累加口罩
+                else {
+                    theLocalMaskData?.quantity += Int32(totalMasks)
+                }
+                
+                try context.save()
             }
-        } catch {
-            print(error)
+            catch {
+                print("errrrror")
+            }
         }
         
         isFinished = true
-        
     }
     
     
