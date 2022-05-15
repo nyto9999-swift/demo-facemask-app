@@ -18,9 +18,9 @@ class ViewController: UIViewController {
 //        let context = appDelegate.persistentContainer.viewContext
 //        FaceMaskRequest()
 //        deleteAllData()
-        let localPath = NSPersistentContainer.defaultDirectoryURL()
-        print("CoreData path: \(localPath)")
         
+        print("CoreData path: \(localPath)")
+        view.backgroundColor = .red
         
         //        let entity = NSEntityDescription.entity(forEntityName: "Users", in: context)
         //        let newUser = NSManagedObject(entity: entity!, insertInto: context)

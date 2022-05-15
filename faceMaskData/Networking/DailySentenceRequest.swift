@@ -15,9 +15,11 @@ class DailySentenceRequest: Operation, URLSessionTaskDelegate, URLSessionDelegat
     var internalFinished: Bool = false
     override var isFinished: Bool {
         get {
+            print("\\dailySentenceReceiveOldData\\")
             return internalFinished
         }
         set (newAnswer) {
+            print("\\dailySentenceReceiveNewData\\")
             willChangeValue(forKey: "isFinished")
             internalFinished = newAnswer
             didChangeValue(forKey: "isFinished")
@@ -27,10 +29,10 @@ class DailySentenceRequest: Operation, URLSessionTaskDelegate, URLSessionDelegat
     override init() {
         super.init()
         let session = URLSession(configuration: .default, delegate: self, delegateQueue: OperationQueue.main)
-        if let url = URL(string: URLString.FaceMask.rawValue) {
+        if let url = URL(string: urlStringType.DailySentence.today()) {
             var request = URLRequest(url: url)
             request.httpMethod = "GET"
-            let task = session.dataTask(with: request)
+            let task = session.dataTask(with: url)
             task.resume()
         }
     }
@@ -58,7 +60,6 @@ class DailySentenceRequest: Operation, URLSessionTaskDelegate, URLSessionDelegat
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         if isCancelled {
             isFinished = true
-            print("hi3")
             task.cancel()
             return
         }
@@ -68,7 +69,19 @@ class DailySentenceRequest: Operation, URLSessionTaskDelegate, URLSessionDelegat
         }
         
         print("Now, you can start scrapping")
-         
+        let contents = String(data: incomingData as Data, encoding: .utf8)!
+        
+        do {
+            let parsedHTML = try Kanna.HTML(html: contents, encoding: String.Encoding.utf8)
+            let sentence = parsedHTML.xpath("/html/body/div[1]/article/div/div/div[2]/p[2]")
+//            print(sentence.first?.text?.trimmingCharacters(in: .whitespacesAndNewlines))
+            let author = parsedHTML.xpath("/html/body/div[1]/article/div/div/div[2]/h1")
+//            print(author.first?.text?.trimmingCharacters(in: .whitespacesAndNewlines))
+            
+        }
+        catch {
+            print("error")
+        }
         
         isFinished = true
     }

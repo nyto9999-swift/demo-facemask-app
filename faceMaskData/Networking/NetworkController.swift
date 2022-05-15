@@ -12,38 +12,14 @@ import CoreData
 class NetworkController: NSObject {
     let queue = OperationQueue()
     
-    let faceMask = FaceMaskRequest()
     override init(){
-        queue.addOperation(faceMask)
-//        deleteAllData()
+        queue.addOperation(FaceMaskRequest())
+        queue.addOperation(DailySentenceRequest())
+
     }
+    func prepareFaceMaskData(){}
+    func prepareDailySentenceData(){}
     
-    
-    var context: NSManagedObjectContext {
-       let appDelegate = UIApplication.shared.delegate as! AppDelegate
-       return appDelegate.persistentContainer.viewContext
-    }
-    
-    func deleteAllData() {
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "FaceMasks")
-        fetchRequest.returnsObjectsAsFaults = false
-        do {
-            let results = try context.fetch(fetchRequest)
-            for object in results {
-                guard let objectData = object as? NSManagedObject else {continue}
-                context.delete(objectData)
-            }
-            
-        } catch let error {
-            print("Detele all data in \("facemask") error :", error)
-        }
-        
-        do {
-            try context.save()
-        }
-        catch {
-            print("hi")
-        }
-    }
+
     
 }

@@ -23,9 +23,4 @@ struct Properties: Codable {
     var mask_child: Int?
 }
 
-enum URLString: String {
-    case FaceMask = "https://raw.githubusercontent.com/kiang/pharmacies/master/json/points.json"
-    case DailySentence = "https://tw.feature.appledaily.com/collection/dailyquote" //fix later
-}
-
 
