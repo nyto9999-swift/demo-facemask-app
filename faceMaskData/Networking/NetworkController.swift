@@ -9,7 +9,6 @@ class NetworkController: NSObject {
         super.init()
         queue.addOperation(FaceMaskOperation())
         queue.addOperation(DailySentenceOperation())
-        sleep(3)
     }
     
     func localFaceMaskData() -> [faceMaskDataFaceMasks]? {

@@ -23,12 +23,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let faceMaskData = networking.localFaceMaskData()
         let dailySentenceData = networking.localDailySentenceData()
         
-        
+        //        print("CoreData path: \(localPath)")
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
         window?.makeKeyAndVisible()
-        let vc = ViewController(faceMaskData: faceMaskData, dailySentenceData: dailySentenceData)
-        window?.rootViewController = UINavigationController(rootViewController: vc)
+        let rootVC = ViewController(faceMaskData: faceMaskData, dailySentenceData: dailySentenceData)
+        rootVC.title = "TaichungFaceMask"
+        let navVC = UINavigationController(rootViewController: rootVC)
+        window?.rootViewController = navVC
         
         
     }
