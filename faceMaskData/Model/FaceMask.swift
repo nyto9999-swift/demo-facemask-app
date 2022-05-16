@@ -9,11 +9,16 @@ import Foundation
 
 struct FaceMakeData: Codable {
     var type: String?
-    var features: [Feature]?
+    var features: [FaceMask]?
+    
 }
 
-struct Feature: Codable {
-    var properties: Properties
+struct FaceMask: Codable {
+    var faceMask: Properties
+    
+    enum CodingKeys: String, CodingKey {
+        case faceMask = "properties"
+    }
 }
 
 struct Properties: Codable {

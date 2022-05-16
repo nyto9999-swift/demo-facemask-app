@@ -1,4 +1,4 @@
- import Foundation
+import Foundation
 import UIKit
 import CoreData
 
@@ -6,16 +6,20 @@ import CoreData
 
 enum urlStringType: String {
     case FaceMask = "https://raw.githubusercontent.com/kiang/pharmacies/master/json/points.json"
-    case DailySentence = "https://tw.feature.appledaily.com/collection/dailyquote/" //fix later
+    case DailySentence = "https://tw.feature.appledaily.com/collection/dailyquote/"
     
     
     func today() -> String {
         //20210520
-        let date = Date()
-        let format = date.getFormattedDate(format: "yyyyMMdd")
-        
-        return urlStringType.DailySentence.rawValue + "\(format)"
+        return urlStringType.DailySentence.rawValue + todayString()
     }
+}
+
+func todayString() -> String {
+    let date = Date()
+    let todayString = date.getFormattedDate(format: "yyyyMMdd")
+    
+    return todayString
 }
 
 extension Date {
@@ -26,7 +30,8 @@ extension Date {
     }
 }
 
- 
+
+//MARK: CoreData
 let localPath = NSPersistentContainer.defaultDirectoryURL()
 
 

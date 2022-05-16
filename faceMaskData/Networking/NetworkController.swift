@@ -1,10 +1,3 @@
-//
-//  NetworkController.swift
-//  faceMaskData
-//
-//  Created by 宇宣 Chen on 2022/5/14.
-//
-
 import Foundation
 import UIKit
 import CoreData
@@ -13,13 +6,21 @@ class NetworkController: NSObject {
     let queue = OperationQueue()
     
     override init(){
-        queue.addOperation(FaceMaskRequest())
-        queue.addOperation(DailySentenceRequest())
-
+        super.init()
+        queue.addOperation(FaceMaskOperation())
+        queue.addOperation(DailySentenceOperation())
+        sleep(3)
     }
-    func prepareFaceMaskData(){}
-    func prepareDailySentenceData(){}
     
-
+    func localFaceMaskData() -> [faceMaskDataFaceMasks]? {
+        let request = NSFetchRequest<faceMaskDataFaceMasks>(entityName: "FaceMasks")
+        return try? context.fetch(request)
+    }
     
+    func localDailySentenceData() -> [faceMaskDataDailySentence]? {
+        let request = NSFetchRequest<faceMaskDataDailySentence>(entityName: "DailySentence")
+        return try? context.fetch(request)
+    }
+    
+    func regionFilter(){}
 }

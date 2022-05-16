@@ -12,38 +12,30 @@ import CoreData
 
 class ViewController: UIViewController {
     
+    var faceMasks:[faceMaskDataFaceMasks]?
+    var sentences:[faceMaskDataDailySentence]?
+    
+    init(faceMaskData: [faceMaskDataFaceMasks]? , dailySentenceData: [faceMaskDataDailySentence]? ) {
+        super.init(nibName: nil, bundle: nil)
+        self.faceMasks = faceMaskData
+        self.sentences = dailySentenceData
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-//        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-//        let context = appDelegate.persistentContainer.viewContext
-//        FaceMaskRequest()
-//        deleteAllData()
+        
+        if let faceMasks = faceMasks {
+            for faceMask in faceMasks {
+                print(faceMask.town)
+            }
+        }
         
         print("CoreData path: \(localPath)")
-        view.backgroundColor = .red
-        
-        //        let entity = NSEntityDescription.entity(forEntityName: "Users", in: context)
-        //        let newUser = NSManagedObject(entity: entity!, insertInto: context)
-        //        newUser.setValue("Tony", forKey: "username")
-        //        do {
-        //            try context.save()
-        //        }
-        //        catch let err {
-        //            print(err)
-        //        }
-        
-        //        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Users")
-        //        request.predicate = NSPredicate(format: "username = %@", "Tony")
-        //        request.returnsObjectsAsFaults = false
-        //        do {
-        //            let result = try context.fetch(request)
-        //            for data in result as! [NSManagedObject] {
-        //                print(data.value(forKey: "username") as! String)
-        //            }
-        //        }
-        //        catch let err {
-        //            print(err)
-        //        }
+        view.backgroundColor = .white
         
         
         

@@ -18,10 +18,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
+        //networking
+        let networking = NetworkController()
+        let faceMaskData = networking.localFaceMaskData()
+        let dailySentenceData = networking.localDailySentenceData()
+        
+        
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
-        window?.rootViewController = ViewController()
         window?.makeKeyAndVisible()
+        let vc = ViewController(faceMaskData: faceMaskData, dailySentenceData: dailySentenceData)
+        window?.rootViewController = UINavigationController(rootViewController: vc)
+        
         
     }
 
