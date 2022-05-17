@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   uuid = "6F8E009C-6712-4B0F-8FAC-BC2E89704A79"
+   type = "0"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "823C929E-3171-49B3-8797-BA218A0E119F"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "faceMaskData/View/ViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "25"
+            endingLineNumber = "25"
+            landmarkName = "ViewController"
+            landmarkType = "3">
+            <Locations>
+               <Location
+                  uuid = "823C929E-3171-49B3-8797-BA218A0E119F - 796eff94ebefca63"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "faceMaskData.ViewController.sentenceView.getter : faceMaskData.SentenceView"
+                  moduleName = "faceMaskData"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yuhsuan/Desktop/%E4%BD%9C%E5%93%81/faceMaskData/faceMaskData/View/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "22"
+                  endingLineNumber = "22"
+                  offsetFromSymbolStart = "140">
+               </Location>
+               <Location
+                  uuid = "823C929E-3171-49B3-8797-BA218A0E119F - ccd06626c0cdd66f"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "faceMaskData.ViewController.sentenceView.setter : faceMaskData.SentenceView"
+                  moduleName = "faceMaskData"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yuhsuan/Desktop/%E4%BD%9C%E5%93%81/faceMaskData/faceMaskData/View/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "22"
+                  endingLineNumber = "22"
+                  offsetFromSymbolStart = "108">
+               </Location>
+               <Location
+                  uuid = "823C929E-3171-49B3-8797-BA218A0E119F - 317dd66c423d3c92"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "faceMaskData.ViewController.sentenceView.modify : faceMaskData.SentenceView"
+                  moduleName = "faceMaskData"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yuhsuan/Desktop/%E4%BD%9C%E5%93%81/faceMaskData/faceMaskData/View/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "0"
+                  endingLineNumber = "0"
+                  offsetFromSymbolStart = "20">
+               </Location>
+               <Location
+                  uuid = "823C929E-3171-49B3-8797-BA218A0E119F - 1e71db958a5a0f1e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "faceMaskData.ViewController.sentenceView.modify : faceMaskData.SentenceView with unmangled suffix &quot;.resume.0&quot;"
+                  moduleName = "faceMaskData"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yuhsuan/Desktop/%E4%BD%9C%E5%93%81/faceMaskData/faceMaskData/View/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "22"
+                  endingLineNumber = "22"
+                  offsetFromSymbolStart = "20">
+               </Location>
+               <Location
+                  uuid = "823C929E-3171-49B3-8797-BA218A0E119F - dee2a20c08d58ca0"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "faceMaskData.ViewController.init(faceMaskData: Swift.Optional&lt;Swift.Array&lt;faceMaskData.faceMaskDataFaceMasks&gt;&gt;, dailySentenceData: Swift.Optional&lt;Swift.Array&lt;faceMaskData.faceMaskDataDailySentence&gt;&gt;) -&gt; faceMaskData.ViewController"
+                  moduleName = "faceMaskData"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yuhsuan/Desktop/%E4%BD%9C%E5%93%81/faceMaskData/faceMaskData/View/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "22"
+                  endingLineNumber = "22"
+                  offsetFromSymbolStart = "196">
+               </Location>
+               <Location
+                  uuid = "823C929E-3171-49B3-8797-BA218A0E119F - 8269eb48bcda5256"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "faceMaskData.ViewController.init(coder: __C.NSCoder) -&gt; Swift.Optional&lt;faceMaskData.ViewController&gt;"
+                  moduleName = "faceMaskData"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yuhsuan/Desktop/%E4%BD%9C%E5%93%81/faceMaskData/faceMaskData/View/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "22"
+                  endingLineNumber = "22"
+                  offsetFromSymbolStart = "196">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "137A0E52-18EE-46FC-B5BA-B4C3F3C31E97"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "faceMaskData/View/SentenceView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "26"
+            endingLineNumber = "26"
+            landmarkName = "init(dailySentence:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>

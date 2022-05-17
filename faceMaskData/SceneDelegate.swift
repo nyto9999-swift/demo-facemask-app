@@ -13,24 +13,22 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+//        print("CoreData path: \(localPath)")
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let windowScene = (scene as? UIWindowScene) else { return }
-        
-        //networking
         let networking = NetworkController()
-        let faceMaskData = networking.localFaceMaskData()
-        let dailySentenceData = networking.localDailySentenceData()
-        
-        //        print("CoreData path: \(localPath)")
-        window = UIWindow(frame: windowScene.coordinateSpace.bounds)
-        window?.windowScene = windowScene
-        window?.makeKeyAndVisible()
-        let rootVC = ViewController(faceMaskData: faceMaskData, dailySentenceData: dailySentenceData)
-        rootVC.title = "TaichungFaceMask"
-        let navVC = UINavigationController(rootViewController: rootVC)
-        window?.rootViewController = navVC
+        var mask = networking.localFaceMaskData()
+       
+               
+       window = UIWindow(frame: windowScene.coordinateSpace.bounds)
+       window?.windowScene = windowScene
+       window?.makeKeyAndVisible()
+        let rootVC = ViewController(faceMaskData: mask)
+       rootVC.title = "TaichungFaceMask"
+       let navVC = UINavigationController(rootViewController: rootVC)
+       window?.rootViewController = navVC
         
         
     }

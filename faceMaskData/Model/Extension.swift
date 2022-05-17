@@ -40,8 +40,30 @@ var context: NSManagedObjectContext {
    return appDelegate.persistentContainer.viewContext
 }
 
-func deleteAllData() {
+func deleteAllMasks() {
     let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "FaceMasks")
+    fetchRequest.returnsObjectsAsFaults = false
+    do {
+        let results = try context.fetch(fetchRequest)
+        for object in results {
+            guard let objectData = object as? NSManagedObject else {continue}
+            context.delete(objectData)
+        }
+        
+    } catch let error {
+        print("Detele all data in \("facemask") error :", error)
+    }
+    
+    do {
+        try context.save()
+    }
+    catch {
+        print("hi")
+    }
+}
+
+func deleteAllSentence() {
+    let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "DailySentence")
     fetchRequest.returnsObjectsAsFaults = false
     do {
         let results = try context.fetch(fetchRequest)
