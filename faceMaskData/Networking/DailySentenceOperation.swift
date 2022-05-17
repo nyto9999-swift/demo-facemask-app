@@ -20,13 +20,11 @@ class DailySentenceOperation: Operation, URLSessionTaskDelegate, URLSessionDeleg
     
     override init() {
         super.init()
-        
-        let session = URLSession(configuration: .default, delegate: self, delegateQueue: OperationQueue.main)
+        let session = URLSession(configuration: .default, delegate: self, delegateQueue: .main)
         if let url = URL(string: urlStringType.DailySentence.today()) {
             var request = URLRequest(url: url)
             request.httpMethod = "GET"
             let task = session.dataTask(with: url)
-            print(urlStringType.DailySentence.today())
             task.resume()
         }
     }
@@ -84,7 +82,6 @@ class DailySentenceOperation: Operation, URLSessionTaskDelegate, URLSessionDeleg
         catch { print("error") }
         
         //sentence 和 author 變數存入CoreData
-        
         deleteAllSentence()
         
         let entity = NSEntityDescription.entity(forEntityName: "DailySentence", in: context)

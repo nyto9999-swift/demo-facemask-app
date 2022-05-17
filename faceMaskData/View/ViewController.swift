@@ -32,10 +32,8 @@ class ViewController: UIViewController {
         return tableview
     }()
     
-    init(faceMaskData: [faceMaskDataFaceMasks]?) {
+    init(test: String) {
         super.init(nibName: nil, bundle: nil)
-        self.faceMasks = faceMaskData
-        
     }
     
     required init?(coder: NSCoder) {
@@ -44,11 +42,20 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("viewDidLoad")
-        
+    
         setupViews()
         setupConstraints()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        self.faceMasks = fetchLocalFaceMasks()
+    }
+    func fetchLocalFaceMasks() -> [faceMaskDataFaceMasks]? {
+        let request = NSFetchRequest<faceMaskDataFaceMasks>(entityName: "FaceMasks")
+        
+        return try? context.fetch(request)
+    }
+  
     
     func setupViews(){
         view.backgroundColor = .white
@@ -62,6 +69,7 @@ class ViewController: UIViewController {
 //        containerView.addArrangedSubview(sentenceView)
         containerView.addArrangedSubview(tableView)
     }
+    
     func setupConstraints(){
         containerView.pin(to: view)
     }
@@ -73,8 +81,6 @@ class ViewController: UIViewController {
 //
         print(self.faceMasks?.count)
     }
-    
- 
 }
 
 //MARK: TableView

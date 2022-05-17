@@ -3,14 +3,19 @@ import UIKit
 
 class FaceMaskOperation: Operation, URLSessionTaskDelegate, URLSessionDelegate, URLSessionDataDelegate {
     
+    var data: [faceMaskDataFaceMasks]?
+    
     var task: URLSessionTask?
     private let incomingData = NSMutableData()
     var internalFinished: Bool = false
     override var isFinished: Bool {
         get {
+            print("finished")
             return internalFinished
         }
         set (newAnswer) {
+            
+            
             willChangeValue(forKey: "isFinished")
             internalFinished = newAnswer
             didChangeValue(forKey: "isFinished")
@@ -19,7 +24,7 @@ class FaceMaskOperation: Operation, URLSessionTaskDelegate, URLSessionDelegate, 
     
     override init() {
         super.init()
-        let session = URLSession(configuration: .default, delegate: self, delegateQueue: OperationQueue.main)
+        let session = URLSession(configuration: .default, delegate: self, delegateQueue: .main)
         if let url = URL(string: urlStringType.FaceMask.rawValue) {
             var request = URLRequest(url: url)
             request.httpMethod = "GET"
@@ -27,8 +32,6 @@ class FaceMaskOperation: Operation, URLSessionTaskDelegate, URLSessionDelegate, 
             task.resume()
         }
     }
-    
-    
     
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
         if isCancelled {
@@ -50,7 +53,6 @@ class FaceMaskOperation: Operation, URLSessionTaskDelegate, URLSessionDelegate, 
         incomingData.append(data)
     }
     
-    
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         if isCancelled {
             isFinished = true
@@ -67,7 +69,11 @@ class FaceMaskOperation: Operation, URLSessionTaskDelegate, URLSessionDelegate, 
         
         //檢查是否已存入CoreData
         var dataExsited: Bool? { return try? context.count(for: request) == 0 ? false : true }
-//        guard dataExsited == false else { isFinished = true; return }
+        
+        guard dataExsited == false else {
+            isFinished = true
+            return
+        }
         
         
         var taichungData = [FaceMask]()
@@ -79,7 +85,7 @@ class FaceMaskOperation: Operation, URLSessionTaskDelegate, URLSessionDelegate, 
         insertDataIntoLocal()
         
         //結束
-        print("faceMaskoperation")
+        
         isFinished = true
         
         func jsonDeoderForTaichungData() {
@@ -134,6 +140,8 @@ class FaceMaskOperation: Operation, URLSessionTaskDelegate, URLSessionDelegate, 
                     }
                 }
             }
+            
+            
         }
     }
     
