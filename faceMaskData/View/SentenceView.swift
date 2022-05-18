@@ -21,10 +21,14 @@ class SentenceView: UIStackView {
         return view
     }()
     
-    public convenience init(dailySentence: [faceMaskDataDailySentence]?) {
+    public convenience init(dailySentence: [faceMaskDataDailySentence]) {
         self.init(frame: .zero)
-        sentenceLabelView.text = dailySentence?.first?.sentence
-        authorLabelView.text = dailySentence?.first?.author
+        
+        
+        sentenceLabelView.text = dailySentence.first?.sentence
+        authorLabelView.text = dailySentence.first?.author
+        
+            
     }
     
     private override init(frame: CGRect) {

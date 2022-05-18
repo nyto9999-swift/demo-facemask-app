@@ -2,8 +2,12 @@ import Kanna
 import CoreData
 import UIKit
 
+protocol NetworkDelegate
+{
+    func faceMaskResponse(done: Bool)
+}
+
 class DailySentenceOperation: Operation, URLSessionTaskDelegate, URLSessionDelegate, URLSessionDataDelegate {
-    
     var task: URLSessionTask?
     private let incomingData = NSMutableData()
     var internalFinished: Bool = false
@@ -64,6 +68,7 @@ class DailySentenceOperation: Operation, URLSessionTaskDelegate, URLSessionDeleg
         var sentence:String?
         var author:String?
          
+    
         //抓取每日一句並傳給 sentence 和 author 變數
         do {
             let contents = String(data: incomingData as Data, encoding: .utf8)!
@@ -78,27 +83,34 @@ class DailySentenceOperation: Operation, URLSessionTaskDelegate, URLSessionDeleg
                 .first?
                 .text?
                 .trimmingCharacters(in: .whitespacesAndNewlines)
+            
         }
         catch { print("error") }
         
         //sentence 和 author 變數存入CoreData
         deleteAllSentence()
         
-        let entity = NSEntityDescription.entity(forEntityName: "DailySentence", in: context)
-        let newSentence = NSManagedObject(entity: entity!, insertInto: context)
-        newSentence.setValue("\(String(describing: author) )", forKey: "author")
-        newSentence.setValue("\(String(describing: sentence) )", forKey: "sentence")
-        
-        do {
-            try context.save()
+        if let sentence = sentence,
+           let author   = author
+        {
+            let entity = NSEntityDescription.entity(forEntityName: "DailySentence", in: context)
+            let newSentence = NSManagedObject(entity: entity!, insertInto: context)
+            newSentence.setValue("\(String(describing: author) )", forKey: "author")
+            newSentence.setValue("\(String(describing: sentence) )", forKey: "sentence")
+            
+            do {
+                try context.save()
+                
+            }
+            catch {
+                print("create new data fail")
+            }
         }
-        catch {
-            print("create new data fail")
-        }
-        
-        
+    
         // 結束
         isFinished = true
+        
+        
     }
 }
 

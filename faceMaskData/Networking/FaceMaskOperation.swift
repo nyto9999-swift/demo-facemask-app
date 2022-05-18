@@ -1,24 +1,25 @@
 import CoreData
 import UIKit
 
+
+
 class FaceMaskOperation: Operation, URLSessionTaskDelegate, URLSessionDelegate, URLSessionDataDelegate {
     
     var data: [faceMaskDataFaceMasks]?
-    
+    var delegate: NetworkDelegate?
     var task: URLSessionTask?
     private let incomingData = NSMutableData()
     var internalFinished: Bool = false
     override var isFinished: Bool {
         get {
-            print("finished")
             return internalFinished
         }
         set (newAnswer) {
             
-            
             willChangeValue(forKey: "isFinished")
             internalFinished = newAnswer
             didChangeValue(forKey: "isFinished")
+            delegate?.faceMaskResponse(done: true)
         }
     }
     
@@ -88,7 +89,9 @@ class FaceMaskOperation: Operation, URLSessionTaskDelegate, URLSessionDelegate, 
         
         isFinished = true
         
+        
         func jsonDeoderForTaichungData() {
+            
             do {
                 let decodedData = try JSONDecoder().decode(FaceMakeData.self,
                                                            from: incomingData as Data)
@@ -117,11 +120,11 @@ class FaceMaskOperation: Operation, URLSessionTaskDelegate, URLSessionDelegate, 
                     request.fetchLimit = 1
                     
                     do {
-                        let localMaskData = try context.fetch(request)
-                        let theLocalMaskData = localMaskData.first
+                        let localMasks = try context.fetch(request)
+                        let theLocalMask = localMasks.first
                         
                         // 新資料
-                        if theLocalMaskData == nil {
+                        if theLocalMask == nil {
                             
                                 let newFaceMask = NSManagedObject(entity: entity!, insertInto: context)
                                 newFaceMask.setValue("\(town)", forKey: "town")
@@ -130,7 +133,7 @@ class FaceMaskOperation: Operation, URLSessionTaskDelegate, URLSessionDelegate, 
                         }
                         // 已有資料，累加口罩
                         else {
-                            theLocalMaskData?.quantity += Int32(totalMasks)
+                            theLocalMask?.quantity += Int32(totalMasks)
                         }
                         
                         try context.save()

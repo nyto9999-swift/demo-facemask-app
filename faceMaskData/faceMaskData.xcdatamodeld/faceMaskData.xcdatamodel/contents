@@ -5,10 +5,10 @@
         <attribute name="sentence" optional="YES" attributeType="String"/>
     </entity>
     <entity name="FaceMasks" representedClassName="faceMaskDataFaceMasks" syncable="YES" codeGenerationType="class">
-        <attribute name="checkmark" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="county" optional="YES" attributeType="String"/>
         <attribute name="quantity" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="town" optional="YES" attributeType="String"/>
+        <attribute name="userChoice" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
     </entity>
     <elements>
         <element name="DailySentence" positionX="-63" positionY="9" width="128" height="59"/>

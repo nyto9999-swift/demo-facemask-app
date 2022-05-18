@@ -2,57 +2,38 @@ import Foundation
 import UIKit
 import CoreData
 
-class NetworkController: UIViewController {
-    
+class NetworkController: UIViewController, NetworkDelegate {
     let queue = OperationQueue()
+    var sentenceFinished = false
+    var faceMaskFinished = false
     
-    init() {
-        super.init(nibName: nil, bundle: nil)
-        
-        queue.addOperation(FaceMaskOperation())
-        queue.addOperation(DailySentenceOperation())
+    func faceMaskResponse(done: Bool) {
+        if done == true {
+            print("yes")
+            let vc = ViewController()
+            let nav = UINavigationController()
+            nav.viewControllers = [vc]
+            nav.title = "台中地區口罩"
+            nav.modalPresentationStyle = .fullScreen
+            nav.modalTransitionStyle = .crossDissolve
+            self.present(nav, animated: true, completion: nil)
+        }
     }
-    
-    
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     
     override func viewDidLoad() {
-        view.backgroundColor = .blue
-    }
-    
-    
-    func localDailySentenceData() -> [faceMaskDataDailySentence] {
-        var data = [faceMaskDataDailySentence]()
-        let request = NSFetchRequest<faceMaskDataDailySentence>(entityName: "DailySentence")
-        do {
-            let sentenceData = try context.fetch(request)
-            data = sentenceData
-            print("Iam local sentence")
-        }
-        catch {
-            print("error")
-        }
-        return data
-    }
-    
-    func localTownData(localFaceMaskData: [faceMaskDataFaceMasks] ) -> [String] {
         
-        var towns = [String]()
-        
-        for data in localFaceMaskData {
-            
-            if data.town != "" {
-                towns.append(data.town!)
-            }
-        }
-        
-        return towns
+        view.backgroundColor = .white
+        let faceMaskOperation = FaceMaskOperation()
+        let sentenceOperation = DailySentenceOperation()
+        queue.addOperation(faceMaskOperation)
+        queue.addOperation(sentenceOperation)
+        faceMaskOperation.addDependency(sentenceOperation)
+        faceMaskOperation.delegate = self
     }
-    
 }
+
+
+
+
 
 

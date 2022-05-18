@@ -2,8 +2,6 @@ import Foundation
 import UIKit
 import CoreData
 
-
-
 enum urlStringType: String {
     case FaceMask = "https://raw.githubusercontent.com/kiang/pharmacies/master/json/points.json"
     case DailySentence = "https://tw.feature.appledaily.com/collection/dailyquote/"
@@ -34,11 +32,11 @@ extension Date {
 //MARK: CoreData
 let localPath = NSPersistentContainer.defaultDirectoryURL()
 
-
 var context: NSManagedObjectContext {
    let appDelegate = UIApplication.shared.delegate as! AppDelegate
    return appDelegate.persistentContainer.viewContext
 }
+
 
 func deleteAllMasks() {
     let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "FaceMasks")

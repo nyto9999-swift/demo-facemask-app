@@ -8,13 +8,11 @@
 import UIKit
 import CoreData
 
-class ViewController: UIViewController {
-    
-//    var sentences = [faceMaskDataDailySentence]()
-    var towns = [String]()
+class ViewController: UIViewController,PassFilteredDataDelegate {
+
+    var local = CoreDataController.shared
+    var sentences = [faceMaskDataDailySentence]()
     var faceMasks:[faceMaskDataFaceMasks]?
-//    var faceMasks = [faceMaskDataFaceMasks]()
-    
     
     lazy var containerView: UIStackView = {
         let view  = UIStackView()
@@ -22,7 +20,7 @@ class ViewController: UIViewController {
         return view
     }()
     
-//    lazy var sentenceView = SentenceView(dailySentence: sentences)
+    lazy var sentenceView = SentenceView(dailySentence: sentences)
     
     lazy var tableView:UITableView = {
         let tableview = UITableView()
@@ -32,30 +30,13 @@ class ViewController: UIViewController {
         return tableview
     }()
     
-    init(test: String) {
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-    
+        self.faceMasks = local.fetchFaceMasks(showAll: false)
+        self.sentences = local.fetchDailySentences()
         setupViews()
         setupConstraints()
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        self.faceMasks = fetchLocalFaceMasks()
-    }
-    func fetchLocalFaceMasks() -> [faceMaskDataFaceMasks]? {
-        let request = NSFetchRequest<faceMaskDataFaceMasks>(entityName: "FaceMasks")
-        
-        return try? context.fetch(request)
-    }
-  
     
     func setupViews(){
         view.backgroundColor = .white
@@ -66,7 +47,7 @@ class ViewController: UIViewController {
         self.navigationItem.rightBarButtonItem = barItem
         
         view.addSubview(containerView)
-//        containerView.addArrangedSubview(sentenceView)
+        containerView.addArrangedSubview(sentenceView)
         containerView.addArrangedSubview(tableView)
     }
     
@@ -75,12 +56,26 @@ class ViewController: UIViewController {
     }
     
     @objc func tappedFilterButton() {
-//        let townVC = TownViewController()
-//        townVC.towns = towns
-//        self.navigationController?.pushViewController(townVC, animated: true)
-//
-        print(self.faceMasks?.count)
+        
+        let townVC = TownViewController()
+        townVC.delegate = self
+        self.navigationController?.pushViewController(townVC, animated: true)
     }
+    
+    func TownControllerResponse(towns: [String]) {
+        local.fileterdFaceMasks(byTown: towns) { [weak self] result in
+            guard let self = self else { return }
+
+            switch result {
+                case .success(let masks):
+                    self.faceMasks = masks
+                    self.tableView.reloadData()
+                case .failure(_):
+                    print("fail filteredmask")
+            }
+        }
+    }
+    
 }
 
 //MARK: TableView
@@ -106,29 +101,15 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
             
             guard let strongSelf = self else { return }
             
-            let request = NSFetchRequest<faceMaskDataFaceMasks>(entityName: "FaceMasks")
-            let predicate = NSPredicate(format: "town = %@", "\(strongSelf.faceMasks?[indexPath.row].town ?? "")")
-            request.predicate = predicate
-            request.fetchLimit = 1
+            let town = strongSelf.faceMasks?[indexPath.row].town ?? ""
             
-            do {
-                let objects = try context.fetch(request)
-                for object in objects {
-                    context.delete(object)
-                    
-                }
-                try context.save()
-                
-                strongSelf.towns = strongSelf.towns.filter { $0 != strongSelf.faceMasks?[indexPath.row].town }
-                strongSelf.faceMasks?.remove(at: indexPath.row)
-            }
-            catch {
-                print("error")
-            }
+            strongSelf.local.updateFaskMask(town: town)
+            strongSelf.faceMasks = strongSelf.local.fetchFaceMasks(showAll: false)
             
             DispatchQueue.main.async {
                 strongSelf.tableView.reloadData()
             }
+            
             handler(true)
         }
         let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
