@@ -1,14 +1,6 @@
-//
-//  TownViewController.swift
-//  faceMaskData
-//
-//  Created by 宇宣 Chen on 2022/5/17.
-//
-
-import UIKit
+ import UIKit
 
 class TownViewController: UIViewController {
-    
     
     var delegate:PassFilteredDataDelegate?
     var local = CoreDataController.shared
@@ -25,20 +17,28 @@ class TownViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         navigationItem.rightBarButtonItem =
-        UIBarButtonItem(title: "Done",
+        UIBarButtonItem(title: "保存",
                         style: .plain,
                         target: self,
                         action: #selector(tappedSave))
         
         setupViews()
         setupConstraints()
-        self.faceMasks = local.fetchFaceMasks(showAll: true)
+         
+        local.fetchAllFaceMasks(completion: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+                case .success(let masks):
+                    self.faceMasks = masks
+                case .failure(let error):
+                    print(error)
+            }
+        })
     }
     
-    
     @objc func tappedSave() {
+        
         if let selectedRows = tableView.indexPathsForSelectedRows {
             
             var towns = [String]()
@@ -66,13 +66,17 @@ class TownViewController: UIViewController {
 }
 extension TownViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
         return faceMasks?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         var content = cell.defaultContentConfiguration()
+        
+        if faceMasks![indexPath.row].isFiltered == true {
+            cell.accessoryType = .checkmark
+        }
+        
         
         cell.selectionStyle = .none
         content.text = faceMasks?[indexPath.row].town
@@ -85,8 +89,6 @@ extension TownViewController: UITableViewDataSource, UITableViewDelegate {
         
         if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark {
             tableView.cellForRow(at: indexPath)?.accessoryType = .none
-            
-            
         }
         else {
             

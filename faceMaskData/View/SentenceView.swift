@@ -2,33 +2,36 @@ import UIKit
 
 class SentenceView: UIStackView {
     
-    var sentenceLabelView: UILabel = {
-        let view = UILabel()
-        view.numberOfLines = 0
-        view.lineBreakMode = .byWordWrapping
+    var sentenceLabel: UILabel = {
+        let view               = UILabel()
+        view.numberOfLines     = 0
+        view.lineBreakMode     = .byWordWrapping
+        view.font              = UIFont.monospacedSystemFont(ofSize: 15, weight: .semibold)
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.font = UIFont.monospacedSystemFont(ofSize: 15, weight: .semibold)
+    
         return view
     }()
     
-    var authorLabelView: UILabel = {
-        let view = UILabel()
+    var authorLabel: UILabel = {
+        let view             = UILabel()
+        view.numberOfLines   = 0
+        view.lineBreakMode   = .byWordWrapping
+        view.font            = UIFont.monospacedSystemFont(ofSize: 15, weight: .light)
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.numberOfLines = 0
-        view.lineBreakMode = .byWordWrapping
-        view.font = UIFont.monospacedSystemFont(ofSize: 15, weight: .light)
-        
         return view
     }()
     
-    public convenience init(dailySentence: [faceMaskDataDailySentence]) {
+    convenience init(dailySentence: [faceMaskDataDailySentence]) {
         self.init(frame: .zero)
-        
-        
-        sentenceLabelView.text = dailySentence.first?.sentence
-        authorLabelView.text = dailySentence.first?.author
-        
+        if let dailySentence = dailySentence.first
+        {
             
+            sentenceLabel.text = dailySentence.sentence
+            authorLabel.text   = dailySentence.author
+            
+        }
+        
+        
     }
     
     private override init(frame: CGRect) {
@@ -38,12 +41,12 @@ class SentenceView: UIStackView {
     
     func setupViews() {
         self.axis = .vertical
-        self.translatesAutoresizingMaskIntoConstraints = false
-        self.translatesAutoresizingMaskIntoConstraints = false
         self.layoutMargins = UIEdgeInsets(top: 10, left: 15, bottom: 10, right: 15)
-        self.isLayoutMarginsRelativeArrangement = true
-        self.addArrangedSubview(sentenceLabelView)
-        self.addArrangedSubview(authorLabelView)
+        self.translatesAutoresizingMaskIntoConstraints = false
+        self.isLayoutMarginsRelativeArrangement        = true
+        
+        self.addArrangedSubview(sentenceLabel)
+        self.addArrangedSubview(authorLabel)
     }
     
     required init(coder: NSCoder) {

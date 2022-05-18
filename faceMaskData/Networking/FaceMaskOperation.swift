@@ -2,23 +2,29 @@ import CoreData
 import UIKit
 
 
+protocol NetworkDelegate
+{
+    func faceMaskResponse(done: Bool)
+}
 
 class FaceMaskOperation: Operation, URLSessionTaskDelegate, URLSessionDelegate, URLSessionDataDelegate {
     
     var data: [faceMaskDataFaceMasks]?
+    var local = CoreDataController.shared
     var delegate: NetworkDelegate?
     var task: URLSessionTask?
     private let incomingData = NSMutableData()
+    
     var internalFinished: Bool = false
     override var isFinished: Bool {
         get {
             return internalFinished
         }
         set (newAnswer) {
-            
             willChangeValue(forKey: "isFinished")
             internalFinished = newAnswer
             didChangeValue(forKey: "isFinished")
+            //delegate
             delegate?.faceMaskResponse(done: true)
         }
     }
@@ -38,8 +44,6 @@ class FaceMaskOperation: Operation, URLSessionTaskDelegate, URLSessionDelegate, 
         if isCancelled {
             print("http code error")
         }
-        
-        // fine keep going
         completionHandler(.allow)
     }
     
@@ -61,94 +65,27 @@ class FaceMaskOperation: Operation, URLSessionTaskDelegate, URLSessionDelegate, 
             return
         }
         if error != nil {
-            print(error)
+            print("faceMask didCompletedWithError")
             isFinished = true
         }
         
+        //檢查CoreData是否已有資料
         let request = NSFetchRequest<NSFetchRequestResult>(entityName: "FaceMasks")
-        let entity = NSEntityDescription.entity(forEntityName: "FaceMasks", in: context)
-        
-        //檢查是否已存入CoreData
         var dataExsited: Bool? { return try? context.count(for: request) == 0 ? false : true }
-        
-        guard dataExsited == false else {
-            isFinished = true
-            return
-        }
-        
-        
+        guard dataExsited == false else { isFinished = true; return }
+           
         var taichungData = [FaceMask]()
         
-        //從json資料中過濾出台中地區的資料並且傳給taichungData變數
-        jsonDeoderForTaichungData()
+        do {
+            let decodedData = try JSONDecoder().decode(FaceMakeData.self, from: incomingData as Data)
+            guard let data = decodedData.features else { isFinished = true; return }
+            let filteredData = data.filter { $0.faceMask.county == "臺中市" }
+            taichungData = filteredData
+        } catch { print(error) }
         
-        //把taichungData變數存到CoreData
-        insertDataIntoLocal()
+        local.insertFaceMasks(taichungData: taichungData)
         
         //結束
-        
         isFinished = true
-        
-        
-        func jsonDeoderForTaichungData() {
-            
-            do {
-                let decodedData = try JSONDecoder().decode(FaceMakeData.self,
-                                                           from: incomingData as Data)
-                
-                guard let data = decodedData.features else { return }
-                let filteredData = data.filter { $0.faceMask.county == "臺中市" }
-                taichungData = filteredData
-            } catch { print(error) }
-        }
-        
-        func insertDataIntoLocal() {
-            
-            for data in taichungData {
-                
-                let childMasks = data.faceMask.mask_child ?? 0
-                let adultMasks = data.faceMask.mask_adult ?? 0
-                let totalMasks = childMasks + adultMasks
-                let town       = data.faceMask.town
-                
-                //存進local
-                if let town = town {
-                    
-                    let request = NSFetchRequest<faceMaskDataFaceMasks>(entityName: "FaceMasks")
-                    let predicate = NSPredicate(format: "town = %@", "\(town)")
-                    request.predicate = predicate
-                    request.fetchLimit = 1
-                    
-                    do {
-                        let localMasks = try context.fetch(request)
-                        let theLocalMask = localMasks.first
-                        
-                        // 新資料
-                        if theLocalMask == nil {
-                            
-                                let newFaceMask = NSManagedObject(entity: entity!, insertInto: context)
-                                newFaceMask.setValue("\(town)", forKey: "town")
-                                newFaceMask.setValue(Int32(totalMasks), forKey: "quantity")
-                            
-                        }
-                        // 已有資料，累加口罩
-                        else {
-                            theLocalMask?.quantity += Int32(totalMasks)
-                        }
-                        
-                        try context.save()
-                    }
-                    catch {
-                        print("errrrror")
-                    }
-                }
-            }
-            
-            
-        }
     }
-    
-    
-    
-    
 }

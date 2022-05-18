@@ -47,7 +47,6 @@ func deleteAllMasks() {
             guard let objectData = object as? NSManagedObject else {continue}
             context.delete(objectData)
         }
-        
     } catch let error {
         print("Detele all data in \("facemask") error :", error)
     }

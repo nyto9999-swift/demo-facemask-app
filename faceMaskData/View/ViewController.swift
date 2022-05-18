@@ -1,28 +1,21 @@
-//
-//  ViewController.swift
-//  faceMaskData
-//
-//  Created by 宇宣 Chen on 2022/5/13.
-//
-
 import UIKit
 import CoreData
 
 class ViewController: UIViewController,PassFilteredDataDelegate {
 
     var local = CoreDataController.shared
-    var sentences = [faceMaskDataDailySentence]()
+    var sentences:[faceMaskDataDailySentence]?
     var faceMasks:[faceMaskDataFaceMasks]?
     
-    lazy var containerView: UIStackView = {
+    var containerView: UIStackView = {
         let view  = UIStackView()
         view.axis = .vertical
         return view
     }()
     
-    lazy var sentenceView = SentenceView(dailySentence: sentences)
+    lazy var sentenceView = SentenceView(dailySentence: sentences!)
     
-    lazy var tableView:UITableView = {
+    var tableView:UITableView = {
         let tableview = UITableView()
         tableview.translatesAutoresizingMaskIntoConstraints = false
         tableview.register(UITableViewCell.self,
@@ -32,8 +25,23 @@ class ViewController: UIViewController,PassFilteredDataDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.faceMasks = local.fetchFaceMasks(showAll: false)
+        local.fetchFaceMasks(completion: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+                case .success(let masks):
+                    self.faceMasks = masks
+                case .failure(let error):
+                    print(error)
+            }
+        })
         self.sentences = local.fetchDailySentences()
+        if local.fetchDailySentences() == nil {
+            self.sentenceView.isHidden = true
+        }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         setupViews()
         setupConstraints()
     }
@@ -56,14 +64,14 @@ class ViewController: UIViewController,PassFilteredDataDelegate {
     }
     
     @objc func tappedFilterButton() {
-        
         let townVC = TownViewController()
         townVC.delegate = self
         self.navigationController?.pushViewController(townVC, animated: true)
     }
     
+    //delegate
     func TownControllerResponse(towns: [String]) {
-        local.fileterdFaceMasks(byTown: towns) { [weak self] result in
+        local.setIsFilteredMask(byTown: towns) { [weak self] result in
             guard let self = self else { return }
 
             switch result {
@@ -75,13 +83,11 @@ class ViewController: UIViewController,PassFilteredDataDelegate {
             }
         }
     }
-    
 }
 
 //MARK: TableView
 extension ViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        return faceMasks.count
         return faceMasks?.count ?? 0
     }
     
@@ -91,31 +97,32 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
         var content = cell.defaultContentConfiguration()
         
         content.text = "口罩數量： \(faceMasks?[indexPath.row].quantity ?? 0)"
-        content.secondaryText = "地區： \(faceMasks?[indexPath.row].town ?? "未知")"
+        content.secondaryText = "地區： \(faceMasks?[indexPath.row].town ?? "無資料")"
         cell.contentConfiguration = content
         return cell
     }
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        
         let deleteAction = UIContextualAction(style: .normal, title: "刪除") { [weak self] action, view, handler in
-            
-            guard let strongSelf = self else { return }
-            
-            let town = strongSelf.faceMasks?[indexPath.row].town ?? ""
-            
-            strongSelf.local.updateFaskMask(town: town)
-            strongSelf.faceMasks = strongSelf.local.fetchFaceMasks(showAll: false)
-            
-            DispatchQueue.main.async {
-                strongSelf.tableView.reloadData()
+            guard let self = self else { return }
+    
+            let town = self.faceMasks?[indexPath.row].town
+            print(town!)
+            self.local.deleteFaceMask(town: town!)
+            self.local.fetchFaceMasks { result in
+                switch result {
+                    case .success(let masks):
+                        self.faceMasks = masks
+                    case .failure(let error):
+                        print(error)
+                }
             }
-            
+            self.tableView.reloadData()
             handler(true)
         }
         let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
-        configuration.performsFirstActionWithFullSwipe = false
+        configuration.performsFirstActionWithFullSwipe = true
         return configuration
     }
 }
-
-

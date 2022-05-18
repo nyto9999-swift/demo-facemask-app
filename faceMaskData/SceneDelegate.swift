@@ -17,7 +17,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
 //        deleteAllMasks()
 //        deleteAllSentence()
-//        print(localPath)
+        print(localPath)
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         self.window = UIWindow(frame: windowScene.coordinateSpace.bounds)
