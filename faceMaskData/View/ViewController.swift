@@ -23,9 +23,12 @@ class ViewController: UIViewController,PassFilteredDataDelegate {
         return tableview
     }()
     
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        local.fetchFaceMasks(completion: { [weak self] result in
+        
+        local.fetchFaceMasksAndCheckFileredCount(completion: { [weak self] result in
             guard let self = self else { return }
             switch result {
                 case .success(let masks):
@@ -88,6 +91,7 @@ class ViewController: UIViewController,PassFilteredDataDelegate {
 //MARK: TableView
 extension ViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
         return faceMasks?.count ?? 0
     }
     
@@ -110,7 +114,7 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
             let town = self.faceMasks?[indexPath.row].town
             print(town!)
             self.local.deleteFaceMask(town: town!)
-            self.local.fetchFaceMasks { result in
+            self.local.fetchFaceMasksAndCheckFileredCount { result in
                 switch result {
                     case .success(let masks):
                         self.faceMasks = masks

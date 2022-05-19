@@ -4,7 +4,7 @@ import UIKit
 
 protocol NetworkDelegate
 {
-    func faceMaskResponse(done: Bool)
+    func networkResponse()
 }
 
 class FaceMaskOperation: Operation, URLSessionTaskDelegate, URLSessionDelegate, URLSessionDataDelegate {
@@ -25,7 +25,7 @@ class FaceMaskOperation: Operation, URLSessionTaskDelegate, URLSessionDelegate, 
             internalFinished = newAnswer
             didChangeValue(forKey: "isFinished")
             //delegate
-            delegate?.faceMaskResponse(done: true)
+            delegate?.networkResponse()
         }
     }
     

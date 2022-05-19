@@ -15,17 +15,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         
-//        deleteAllMasks()
-//        deleteAllSentence()
-        print(localPath)
+//        print(localPath)
         guard let windowScene = (scene as? UIWindowScene) else { return }
+        
         
         self.window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         self.window?.windowScene = windowScene
-        let rootVC = NetworkController()
-        self.window?.rootViewController = rootVC
+        self.window?.backgroundColor = .white
         self.window?.makeKeyAndVisible()
-
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {

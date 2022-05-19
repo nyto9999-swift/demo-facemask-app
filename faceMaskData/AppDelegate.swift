@@ -1,23 +1,13 @@
-//
-//  AppDelegate.swift
-//  faceMaskData
-//
-//  Created by 宇宣 Chen on 2022/5/13.
-//
-
 import UIKit
 import CoreData
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
-    
-    
-    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-        
-        
+        let nv = NetworkController()
+        nv.loadNetworkData()
         return true
         
     }

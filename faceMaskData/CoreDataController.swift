@@ -3,7 +3,10 @@ import UIKit
 import Foundation
 
 class CoreDataController {
+    
     static let shared = CoreDataController()
+    
+    
     
     //faceMask methods
     func insertFaceMasks(taichungData: [FaceMask]) {
@@ -46,11 +49,13 @@ class CoreDataController {
         }
     }
     
-    func fetchFaceMasks(completion: @escaping (Result<[faceMaskDataFaceMasks]?, Error>) -> Void){
+    func fetchFaceMasksAndCheckFileredCount(completion: @escaping (Result<[faceMaskDataFaceMasks]?, Error>) -> Void){
         var filteredCount = 0
         let request = NSFetchRequest<faceMaskDataFaceMasks>(entityName: "FaceMasks")
         let predicate = NSPredicate(format: "isFiltered == YES")
         request.predicate = predicate
+        request.sortDescriptors = [NSSortDescriptor(key: "quantity", ascending: false)]
+  
         
         do {
             filteredCount = try context.count(for: request)
@@ -95,7 +100,7 @@ class CoreDataController {
             }
         }
         
-        self.fetchFaceMasks { result in
+        self.fetchFaceMasksAndCheckFileredCount { result in
             switch result {
                 case .success(let masks):
                     completion(.success(masks))
@@ -125,6 +130,7 @@ class CoreDataController {
     
     func fetchAllFaceMasks(completion: @escaping (Result<[faceMaskDataFaceMasks]?, Error>) -> Void){
         let request = NSFetchRequest<faceMaskDataFaceMasks>(entityName: "FaceMasks")
+        request.sortDescriptors = [NSSortDescriptor(key: "quantity", ascending: false)]
         completion(.success(try? context.fetch(request)))
     }
     
@@ -151,7 +157,6 @@ class CoreDataController {
             newSentence.setValue(sentence, forKey: "sentence")
         }
      
-        
         do {
             try context.save()
         }
