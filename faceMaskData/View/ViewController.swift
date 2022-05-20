@@ -73,16 +73,31 @@ class ViewController: UIViewController,PassFilteredDataDelegate {
     }
     
     //delegate
-    func TownControllerResponse(towns: [String]) {
-        local.setIsFilteredMask(byTown: towns) { [weak self] result in
-            guard let self = self else { return }
+    func TownControllerResponse(towns: [String]?) {
+        
+        if let towns = towns {
+            local.setIsFilteredMask(byTown: towns) { [weak self] result in
+                guard let self = self else { return }
 
-            switch result {
-                case .success(let masks):
-                    self.faceMasks = masks
-                    self.tableView.reloadData()
-                case .failure(_):
-                    print("fail filteredmask")
+                switch result {
+                    case .success(let masks):
+                        self.faceMasks = masks
+                        self.tableView.reloadData()
+                    case .failure(_):
+                        print("filteredmask failed")
+                }
+            }
+        }
+        else {
+            local.resetFilteredMask()
+            local.fetchAllFaceMasks { result in
+                switch result {
+                    case .success(let masks):
+                        self.faceMasks = masks
+                        self.tableView.reloadData()
+                    case .failure(_):
+                        print("fetch all mask failed")
+                }
             }
         }
     }

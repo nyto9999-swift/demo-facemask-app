@@ -134,6 +134,33 @@ class CoreDataController {
         completion(.success(try? context.fetch(request)))
     }
     
+    func resetFilteredMask() {
+        
+        
+        
+        let request = NSFetchRequest<faceMaskDataFaceMasks>(entityName: "FaceMasks")
+        let predicate = NSPredicate(format: "isFiltered == YES")
+        request.predicate = predicate
+        do {
+            let masks = try context.fetch(request)
+            for mask in masks {
+                mask.isFiltered = false
+            }
+        }
+        catch {
+            print("reset error")
+        }
+        
+        do {
+            try context.save()
+        }
+        catch _ {
+            print("save error")
+        }
+        
+        
+    }
+    
     
     //dailySentence methods
     func fetchDailySentences() -> [faceMaskDataDailySentence]? {

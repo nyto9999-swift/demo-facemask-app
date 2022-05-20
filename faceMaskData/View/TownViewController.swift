@@ -17,11 +17,17 @@ class TownViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.rightBarButtonItem =
-        UIBarButtonItem(title: "保存",
+        navigationItem.rightBarButtonItems =
+        [
+            UIBarButtonItem(title: "保存",
+                            style: .plain,
+                            target: self,
+                            action: #selector(tappedSave)),
+            UIBarButtonItem(title: "全部",
                         style: .plain,
                         target: self,
-                        action: #selector(tappedSave))
+                        action: #selector(tappedAll))
+        ]
         
         setupViews()
         setupConstraints()
@@ -35,6 +41,11 @@ class TownViewController: UIViewController {
                     print(error)
             }
         })
+    }
+    
+    @objc func tappedAll() {
+        delegate?.TownControllerResponse(towns: nil)
+        self.navigationController?.popViewController(animated: true)
     }
     
     @objc func tappedSave() {
@@ -113,7 +124,7 @@ extension TownViewController: UITableViewDataSource, UITableViewDelegate {
 }
 protocol PassFilteredDataDelegate
 {
-    func TownControllerResponse(towns: [String])
+    func TownControllerResponse(towns: [String]?)
 }
 
 
