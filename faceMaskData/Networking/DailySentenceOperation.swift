@@ -4,8 +4,9 @@ import UIKit
 
 class DailySentenceOperation: Operation, URLSessionTaskDelegate, URLSessionDelegate, URLSessionDataDelegate {
     var task: URLSessionTask?
-    private let incomingData = NSMutableData()
+    let incomingData = NSMutableData()
     var local = CoreDataController.shared
+    
     
     var internalFinished: Bool = false
     override var isFinished: Bool {
@@ -61,26 +62,30 @@ class DailySentenceOperation: Operation, URLSessionTaskDelegate, URLSessionDeleg
             print("sentence didcompletewitherror")
             isFinished = true
         }
-        
         var sentence:String?
         var author:String?
+        
         //抓取每日一句並傳給 sentence 和 author 變數
-        do {
-            let contents = String(data: incomingData as Data, encoding: .utf8)!
-            let parsedHTML = try Kanna.HTML(html: contents, encoding: String.Encoding.utf8)
-            
-            sentence = parsedHTML.xpath("/html/body/div[1]/article/div/div/div[2]/p[2]")
-                .first?
-                .text?
-                .trimmingCharacters(in: .whitespacesAndNewlines)
-            
-            author = parsedHTML.xpath("/html/body/div[1]/article/div/div/div[2]/h1")
-                .first?
-                .text?
-                .trimmingCharacters(in: .whitespacesAndNewlines)
-            
-        }
-        catch { print("error") }
+        
+        
+       
+            do {
+                let contents = String(data: incomingData as Data, encoding: .utf8)!
+                let parsedHTML = try Kanna.HTML(html: contents, encoding: String.Encoding.utf8)
+                
+                sentence = parsedHTML.xpath("/html/body/div[1]/article/div/div/div[2]/p[2]")
+                    .first?
+                    .text?
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+                
+                author = parsedHTML.xpath("/html/body/div[1]/article/div/div/div[2]/h1")
+                    .first?
+                    .text?
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+                
+            }
+            catch { print("error") }
+        
         
         //sentence 和 author 變數存入CoreData
         local.updateDailySentence(author: author, sentence: sentence)

@@ -6,8 +6,6 @@ class CoreDataController {
     
     static let shared = CoreDataController()
     
-    
-    
     //faceMask methods
     func insertFaceMasks(taichungData: [FaceMask]) {
         for data in taichungData {

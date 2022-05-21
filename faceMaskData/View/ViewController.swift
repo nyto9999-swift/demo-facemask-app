@@ -75,6 +75,7 @@ class ViewController: UIViewController,PassFilteredDataDelegate {
     //delegate
     func TownControllerResponse(towns: [String]?) {
         
+        
         if let towns = towns {
             local.setIsFilteredMask(byTown: towns) { [weak self] result in
                 guard let self = self else { return }

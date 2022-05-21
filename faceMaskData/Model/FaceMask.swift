@@ -7,13 +7,17 @@
 
 import Foundation
 
-struct FaceMakeData: Codable {
+struct FaceMakeData: Codable,Equatable {
     var type: String?
     var features: [FaceMask]?
     
 }
 
-struct FaceMask: Codable {
+struct FaceMask: Codable, Equatable {
+    static func == (lhs: FaceMask, rhs: FaceMask) -> Bool {
+        return true
+    }
+    
     var faceMask: Properties
     
     enum CodingKeys: String, CodingKey {

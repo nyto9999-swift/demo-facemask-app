@@ -13,7 +13,8 @@ class FaceMaskOperation: Operation, URLSessionTaskDelegate, URLSessionDelegate, 
     var local = CoreDataController.shared
     var delegate: NetworkDelegate?
     var task: URLSessionTask?
-    private let incomingData = NSMutableData()
+    let incomingData = NSMutableData()
+    var taichungData = [FaceMask]()
     
     var internalFinished: Bool = false
     override var isFinished: Bool {
@@ -71,17 +72,22 @@ class FaceMaskOperation: Operation, URLSessionTaskDelegate, URLSessionDelegate, 
         
         //檢查CoreData是否已有資料
         let request = NSFetchRequest<NSFetchRequestResult>(entityName: "FaceMasks")
+        
         var dataExsited: Bool? { return try? context.count(for: request) == 0 ? false : true }
         guard dataExsited == false else { isFinished = true; return }
-           
-        var taichungData = [FaceMask]()
         
         do {
             let decodedData = try JSONDecoder().decode(FaceMakeData.self, from: incomingData as Data)
             guard let data = decodedData.features else { isFinished = true; return }
             let filteredData = data.filter { $0.faceMask.county == "臺中市" }
+            
             taichungData = filteredData
         } catch { print(error) }
+        
+        func loadFaskMaskJson () {
+            
+        }
+        
         
         local.insertFaceMasks(taichungData: taichungData)
         
