@@ -47,7 +47,7 @@ class faceMaskDataTests: XCTestCase {
     }
     
     func test_download_sentence_successfully() {
-        let exp = expectation(description: "face mask was downloaded")
+        let exp = expectation(description: "sentence was downloaded")
         let url = URL(string: urlStringType.DailySentence.rawValue)!
         URLSession.shared.dataTask(with: url) { data, _, _ in
             
@@ -62,7 +62,7 @@ class faceMaskDataTests: XCTestCase {
         var sentence:String?
         var author:String?
         
-        let exp = expectation(description: "face mask was downloaded")
+        let exp = expectation(description: "sentence was scraped")
         let url = URL(string: urlStringType.DailySentence.rawValue)!
         URLSession.shared.dataTask(with: url) { data, _, _ in
             
