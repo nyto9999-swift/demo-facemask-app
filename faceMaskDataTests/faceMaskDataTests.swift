@@ -34,9 +34,7 @@ class faceMaskDataTests: XCTestCase {
         XCTAssertGreaterThan(count!, 0)
     }
     
-    func test_local_can_delete() {
-        
-    }
+ 
     
     //sentence
     func test_sentenceOperation_can_finish() {
